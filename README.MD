@@ -15,7 +15,8 @@ This exercise contains two parts:
 ...
 ]
 
-2. Create and download a subdirectory that downloaded the form name onto the current working directory and downloaded each individual .pdf available into the folder as an exact match only: (ex: Form W-2/Form W-2 - 2020.pdf).
+
+2. Create and download a subdirectory that downloads the form name onto the current working directory and populates it with each individual .pdf available as an exact match only: (ex: Form W-2/Form W-2 - 2020.pdf).
 
 ## Installation:
 
@@ -31,6 +32,15 @@ $ python3 irs_webscrape.py
 python3 --version (Python 3.6.9)
 
 ### Challenges (in order of how they appeared):
-* Which URL to scrape from. 
-* 
 
+* Which URL to scrape from. The URL I had constructed originally was throwing an error after >3 get requests. I had to play around with how I was constructing the URL to prevent blocking while debugging (I could have also setup another proxy to call the request from)
+* Setting up the JSON for max_year and min_year. I attempted to create a function that checks against all other years to return (max_year, min_year) but had no luck so I just grabbed the first and last elements in the dictionary as the results were sorted in the form (isDescending = True).
+* Filtering out similiar form names. I had to add extra logic to ensure the raw input matched the text within the html <a href> link.
+* Nesting functions and if/else conditions. The information either pulled nothing or pulled incorrectly depending upon where it was nested in the logic.
+
+
+
+### Optimizations:
+
+* Offer a fuzzy logic dropdown menu of forms that match the input before proceeding with the scrape. (ex: input: "W-2" ; output: Did you mean "Form W-2" or "Inst W-2 and W-3"? (y/n)). 
+* Build a class 

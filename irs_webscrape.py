@@ -63,7 +63,7 @@ def grab_json_values():
 
         # The <a> tag is embedded within the LeftCellSpacer. Alternate: form_direct_link = ele.find('a', href=True)
         form_link = form_number.a["href"]
-
+        final_form_number = ""
         form_title = ele.find("td", class_="MiddleCellSpacer")
         form_year = ele.find("td", class_="EndCellSpacer")
 
@@ -71,38 +71,45 @@ def grab_json_values():
         if form_number and form_number != "" and form_input.strip().lower() == form_product_number.lower():
             form_info.append({"form_number": form_number.text.strip(), "form_title": form_title.text.strip(), "form_year": form_year.text.strip() })
 
-            #check_year(form_info)
-
-            #print(json.dumps(form_info, indent=4))
-
-            # DO NOT TOUCH (over-indentation pulls extra similair matches!) 
+            # # DO NOT TOUCH (over-indentation pulls extra similar matches!) 
             create_dir_for_form(formatted_form, form_link)
 
 
-    # Alternate: Assign "max_year = form_info[0]["form_year"]" but this ensures the max, min is accurate if not sorted. 
-    try:
-        max_year = min_year = int(form_info[0]['form_year'])
-        for i in range(len(form_info)):
-            if int(form_info[i]['form_year']) > max_year:
-                max_year = int(form_info[i]['form_year'])
-            elif int(form_info[i]['form_year']) < min_year:
-                min_year = int(form_info[i]['form_year'])
-        #print (max_year, min_year)    
-
-            if max_year and min_year:
-                #print(max_year)
-                final_form_info.append(({"form_number": form_number.text.strip(),
-                                         "form_title": form_title.text.strip(),
-                                         "min_year": min_year, 
-                                         "max_year": max_year}))
-                #print(final_form_info.dumps(form_info, indent=4))
+    #     except Exception as err: 
+    #         print(f"The form doesn't exist. Check your spelling and try again. Complete form names only work currently. + {err}")
 
 
-        #create_dir_for_form(formatted_form, form_link)
 
-    except Exception as err: 
-        print(f"The form doesn't exist. Check your spelling and try again. Complete form names only work currently. + {err}")
+    # Info is populated into array and a print statement shows the year in descending order. 
+    # print(form_info[0]['form_number'])
+    # print(form_info[0]['form_title'])
+    # print(form_info[0]['form_year'])
+    # print(form_info[len(form_info)-1]['form_year'])
 
+
+    #max_year = min_year = int(form_info[0]['form_year'])
+    final_values =[]
+
+    # for i in range(len(form_info)):
+    #     if int(form_info[i]['form_year']) > max_year:
+    #         max_year = int(form_info[i]['form_year'])
+    #     elif int(form_info[i]['form_year']) < min_year:
+    #         min_year = int(form_info[i]['form_year'])
+    #         return (max_year, min_year)   
+        
+
+    if form_info and form_info[0]['form_year'] <= form_info[0]['form_year'] :
+        final_values.append(({"form_number": form_number.text.strip(),
+                                              "form_title": form_title.text.strip(),
+                                              "min_year": form_info[len(form_info)-1]['form_year'], 
+                                              "max_year": form_info[0]['form_year']}))
+        print(" ")
+        print("JSON representation of form number, title, oldest date available and newest date available: ")
+        print(" ")
+        print(json.dumps(final_values, indent=4))
+
+        # # #  WILL ONLY DOWNLOAD 1 PDF IF YOU CALL FUNCTION FROM HERE
+        # create_dir_for_form(formatted_form, form_link)
 
 
 # Save .pdf filename to path='Form W-2/Form W-2 - 2020.pdf for all available years.
