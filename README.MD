@@ -1,10 +1,10 @@
-# Webscrape Coding Challenge - IRS Form Webscrape and .Pdf Download.
+# Coding Challenge - IRS Form Webscrape and .Pdf Download.
 
 This exercise contains two parts:
 
 1. Using BeautifulSoup4, scrape the IRS webiste (website = "https://apps.irs.gov/app/picklist/list/priorFormPublication.html") to return a list of results for only the specified requested form name (ex: "Form W-2", "Form 1095-C"). Results will be returned as JSON for an exact match only and only inlude the newest + oldest year available for a given form:
 
-
+```
 [
 {
 "form_number": "Form W-2",
@@ -15,7 +15,7 @@ This exercise contains two parts:
 ...
 ]
 
-
+```
 2. Create and download a subdirectory that downloads the form name onto the current working directory and populates it with each individual .pdf available as an exact match only: (ex: Form W-2/Form W-2 - 2020.pdf).
 
 ## Installation:
