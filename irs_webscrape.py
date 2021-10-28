@@ -73,11 +73,9 @@ def grab_json_values():
 
             # # DO NOT TOUCH (over-indentation pulls extra similar matches!) 
             create_dir_for_form(formatted_form, form_link)
-
-
-    #     except Exception as err: 
-    #         print(f"The form doesn't exist. Check your spelling and try again. Complete form names only work currently. + {err}")
-
+        elif not ele:
+            print("No downloads available due to this form being invalid. Check your spelling and try again.")
+            break    
 
 
     # Info is populated into array and a print statement shows the year in descending order. 
