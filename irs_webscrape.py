@@ -33,12 +33,14 @@ import json
 from bs4 import BeautifulSoup, SoupStrainer
 
 
-# Hard code a sample form for testing purposes and format for proper URL query.
-form_input = "Form W-2"
-formatted_form = form_input.rstrip().replace(" ", "+").lower()
-
 # Base website 
 website = "https://apps.irs.gov/app/picklist/list/priorFormPublication.html"
+
+# Input from CLI (hardcoded when testing).
+# form_input = "Form W-2"
+form_input = input(f"Type in the form you are requesting from website: {website}. Your input it not case sensitive but it is space sensitive: ")
+
+formatted_form = form_input.rstrip().replace(" ", "+").lower()
 
 # Do a search on a form and append the sort arrow. This ensures you only get data about the exact form in the query.  
 URL = "https://apps.irs.gov/app/picklist/list/priorFormPublication.html?resultsPerPage=200&sortColumn=sortOrder&indexOfFirstRow=0&criteria=formNumber&value=" + formatted_form + "&isDescending=false"
@@ -54,6 +56,7 @@ form_info = []
 
 # Parse the even/odd Class to pull the values out of the td elements. SoupStrainer doesn't parse faster but saves memory. 
 def grab_json_values():
+
     for ele in BeautifulSoup(site.content, parse_only=SoupStrainer(True, {'class':['even','odd']}), features="html.parser"):
 
         form_number = ele.find("td", class_="LeftCellSpacer")
@@ -63,19 +66,18 @@ def grab_json_values():
 
         # The <a> tag is embedded within the LeftCellSpacer. Alternate: form_direct_link = ele.find('a', href=True)
         form_link = form_number.a["href"]
-        final_form_number = ""
+
         form_title = ele.find("td", class_="MiddleCellSpacer")
         form_year = ele.find("td", class_="EndCellSpacer")
 
         # I had to check against the product number text in order to pull an exact match only.  
         if form_number and form_number != "" and form_input.strip().lower() == form_product_number.lower():
-            form_info.append({"form_number": form_number.text.strip(), "form_title": form_title.text.strip(), "form_year": form_year.text.strip() })
+            form_info.append({"form_number": form_number.text.strip(), "form_title": form_title.text.strip(), "form_year": form_year.text.strip(), 'dir_info': [formatted_form, form_link]})
 
-            # # DO NOT TOUCH (over-indentation pulls extra similar matches!) 
-            create_dir_for_form(formatted_form, form_link)
-        elif not ele:
-            print("No downloads available due to this form being invalid. Check your spelling and try again.")
-            break    
+        elif not form_title:
+            print("No downloads available for this form.")
+            pass
+            
 
 
     # Info is populated into array and a print statement shows the year in descending order. 
@@ -83,6 +85,10 @@ def grab_json_values():
     # print(form_info[0]['form_title'])
     # print(form_info[0]['form_year'])
     # print(form_info[len(form_info)-1]['form_year'])
+
+    if not form_info:
+        print('No file by this name found. Check your spelling and try again.')
+        return False
 
 
     #max_year = min_year = int(form_info[0]['form_year'])
@@ -108,6 +114,8 @@ def grab_json_values():
 
         # # #  WILL ONLY DOWNLOAD 1 PDF IF YOU CALL FUNCTION FROM HERE
         # create_dir_for_form(formatted_form, form_link)
+        for form in form_info:
+            create_dir_for_form(form['dir_info'][0], form['dir_info'][1])
 
 
 # Save .pdf filename to path='Form W-2/Form W-2 - 2020.pdf for all available years.
