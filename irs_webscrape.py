@@ -54,7 +54,22 @@ except:
 
 form_info = []
 
-# Parse the even/odd Class to pull the values out of the td elements. SoupStrainer doesn't parse faster but saves memory. 
+def get_max_min_year(form_info):
+
+    # helper function to return max and min year for forms
+
+    max_year = min_year = int(form_info[0]['form_year'])
+
+    for i in range(len(form_info)):
+        if int(form_info[i]['form_year']) > max_year:
+            max_year = int(form_info[i]['form_year'])
+        elif int(form_info[i]['form_year']) < min_year:
+            min_year = int(form_info[i]['form_year'])
+    
+    return (max_year, min_year)
+
+
+# Parse the even/odd Class to pull the values out of the td elements. SoupStrainer doesn't parse faster but saves memory. Set to True to parse as obj and not string. 
 def grab_json_values():
 
     for ele in BeautifulSoup(site.content, parse_only=SoupStrainer(True, {'class':['even','odd']}), features="html.parser"):
@@ -91,29 +106,20 @@ def grab_json_values():
         return False
 
 
-    #max_year = min_year = int(form_info[0]['form_year'])
     final_values =[]
-
-    # for i in range(len(form_info)):
-    #     if int(form_info[i]['form_year']) > max_year:
-    #         max_year = int(form_info[i]['form_year'])
-    #     elif int(form_info[i]['form_year']) < min_year:
-    #         min_year = int(form_info[i]['form_year'])
-    #         return (max_year, min_year)   
-        
+    max_year, min_year = get_max_min_year(form_info)
 
     if form_info and form_info[0]['form_year'] <= form_info[0]['form_year'] :
         final_values.append(({"form_number": form_number.text.strip(),
                                               "form_title": form_title.text.strip(),
-                                              "min_year": form_info[len(form_info)-1]['form_year'], 
-                                              "max_year": form_info[0]['form_year']}))
+                                              "min_year": min_year,
+                                              "max_year": max_year }))
         print(" ")
         print("JSON representation of form number, title, oldest date available and newest date available: ")
         print(" ")
         print(json.dumps(final_values, indent=4))
 
         # # #  WILL ONLY DOWNLOAD 1 PDF IF YOU CALL FUNCTION FROM HERE
-        # create_dir_for_form(formatted_form, form_link)
         for form in form_info:
             create_dir_for_form(form['dir_info'][0], form['dir_info'][1])
 

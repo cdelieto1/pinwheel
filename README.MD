@@ -31,17 +31,18 @@ $ python3 irs_webscrape.py
 
 python3 --version (Python 3.6.9)
 
+
 ### Challenges (in order of how they appeared):
 
 * Which URL to scrape from. The URL I had constructed originally was throwing an error after >3 get requests. I had to play around with how I was constructing the URL to prevent blocking while debugging (I could have also setup another proxy to call the request from)
-* Setting up the JSON for max_year and min_year. I attempted to create a function that checks against all other years to return (max_year, min_year) but had no luck so I just grabbed the first and last elements in the dictionary as the results were sorted in the form (isDescending = True).
+* Setting up the JSON for max_year and min_year. I attempted to create a function that checks against all other years to return (max_year, min_year) but had no luck so I just grabbed the first and last elements in the dictionary as the results were sorted in the form (isDescending = False).
 * Filtering out similiar form names. I had to add extra logic to ensure the raw input matched the text within the html a href link.
 * Nesting functions and if/else conditions. The information either pulled nothing or pulled incorrectly depending upon where it was nested in the logic.
-* Invalid forms still created subdirectorie with their invalid form and populated 
+* Invalid forms still created subdirectories with their invalid form and populated 
 
 
 
 ### Optimizations:
 
 * Offer a fuzzy logic dropdown menu of forms that match the input before proceeding with the scrape. (ex: input: "W-2" ; output: Did you mean "Form W-2" or "Inst W-2 and W-3"? (y/n)). 
-* Build current logic into a Class so we can flag it as IS_DEBUG = sandbox for testing. 
+* Build current logic into a Class so we can flag it as IS_DEBUG = sandbox for testing and fetching/debugging.  
